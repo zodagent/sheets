@@ -1,0 +1,5 @@
+node_modules/
+*.tmp
+.DS_Store
+# an unused scratch file from development
+src/ui/app.js

@@ -1,0 +1,16 @@
+{
+  "name": "zod-sheets",
+  "version": "1.0.0",
+  "description": "A spreadsheet and database workbench as an MCP App for Zod: formulas, charts, many sheets, SQLite / PostgreSQL / MySQL, SQL editor.",
+  "type": "module",
+  "license": "MIT",
+  "bin": { "zod-sheets": "server.js" },
+  "files": ["server.js", "src", "README.md", "LICENSE"],
+  "engines": { "bun": ">=1.2.0" },
+  "scripts": {
+    "start": "bun server.js",
+    "test": "bun test",
+    "harness": "SHEETS_DEV=1 bun test/harness.js"
+  },
+  "keywords": ["mcp", "mcp-app", "spreadsheet", "sqlite", "postgres", "mysql", "zod"]
+}
