@@ -4,9 +4,10 @@
 import { handle } from '../server.js'
 const port = Number(process.argv[2] || process.env.PORT || 19400)
 const page = `<!doctype html><meta charset=utf-8><title>host</title><style>html,body{margin:0;height:100%;background:#cfd6e0}iframe{border:0;width:100%;display:block}</style>
-<iframe id=f sandbox="allow-scripts" style="height:100vh"></iframe>
+<iframe id=f style="height:100vh"></iframe>
 <script>
 const f=document.getElementById('f')
+if(!new URLSearchParams(location.search).get('open'))f.setAttribute('sandbox','allow-scripts')
 fetch('/mcp',{method:'POST',body:JSON.stringify({jsonrpc:'2.0',id:1,method:'resources/read',params:{uri:'ui://sheets/app'}})}).then(r=>r.json()).then(r=>{
   const html=r.result.contents[0].text
   const csp="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'"
@@ -18,7 +19,7 @@ addEventListener('message',async e=>{
   const m=e.data||{}
   if(m.jsonrpc!=='2.0'||!m.method)return
   const send=x=>f.contentWindow.postMessage({jsonrpc:'2.0',...x},'*')
-  if(m.method==='ui/initialize')return send({id:m.id,result:{protocolVersion:'2025-11-21',hostInfo:{name:'harness'},hostCapabilities:{serverTools:{}},hostContext:{theme,styles:{variables:{}},displayMode:'inline'}}})
+  if(m.method==='ui/initialize')return send({id:m.id,result:{protocolVersion:'2025-11-21',hostInfo:{name:'harness'},hostCapabilities:{serverTools:{}},hostContext:{theme,styles:{variables: new URLSearchParams(location.search).get('zod') ? {'--color-background-primary':'hsl(190 18% 11%)','--color-background-secondary':'hsl(190 18% 14%)','--color-text-primary':'hsl(190 14% 88%)','--color-border-primary':'hsl(190 18% 19%)','--font-sans':'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'} : {}},displayMode:'inline'}}})
   if(m.method==='notifications/message'){document.title='ERR '+JSON.stringify(m.params.data);console.error(m.params.data);return}
   if(m.method==='ui/notifications/size-changed')return
   if(m.method==='tools/call'){

@@ -21,10 +21,38 @@ function setMode(m) {
 App.setMode = setMode
 
 function applyTheme(ctx) {
-  const dark = ctx?.theme ? ctx.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
-  document.documentElement.dataset.theme = dark ? 'dark' : 'light'
-  const font = ctx?.styles?.variables?.['--font-sans']
-  if (font) document.documentElement.style.setProperty('--font', font)
+  const root = document.documentElement
+  const v = ctx?.styles?.variables || {}
+  const bg = parseColor(v['--color-background-primary'])
+  let dark = ctx?.theme ? ctx.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+  if (bg) dark = bg.l < 0.5
+  root.dataset.theme = dark ? 'dark' : 'light'
+  root.dataset.host = bg ? 'zod' : ''
+  const font = v['--font-sans']
+  if (font) root.style.setProperty('--font', font)
+  // Zod's own colours, when the host sends them: the page then looks like the rest of Zod. The accent is Zod's primary,
+  // which Zod builds from the same hue as its backgrounds.
+  const set = (k, val) => (val ? root.style.setProperty(k, val) : root.style.removeProperty(k))
+  if (bg) {
+    const hue = Math.round(bg.s > 0.06 ? bg.h : 215)
+    const accent = dark ? `hsl(${hue} 65% 62%)` : `hsl(${hue} 70% 40%)`
+    set('--c-surface', v['--color-background-primary'])
+    set('--c-raise', v['--color-background-secondary'] || v['--color-background-primary'])
+    set('--c-head', v['--color-background-secondary'] || v['--color-background-primary'])
+    set('--c-top', v['--color-background-primary'])
+    set('--c-bg', v['--color-background-secondary'])
+    set('--c-border', v['--color-border-primary'])
+    set('--c-text', v['--color-text-primary'])
+    set('--c-top-text', v['--color-text-primary'])
+    set('--c-grid', 'color-mix(in srgb, var(--c-border) 70%, var(--c-surface))')
+    set('--c-muted', 'color-mix(in srgb, var(--c-text) 58%, var(--c-surface))')
+    set('--c-head-text', 'color-mix(in srgb, var(--c-text) 62%, var(--c-surface))')
+    set('--c-hover', 'color-mix(in srgb, var(--c-text) 8%, var(--c-surface))')
+    set('--c-accent', accent)
+    set('--c-accent-text', dark ? '#101010' : '#ffffff')
+    set('--c-accent-soft', `color-mix(in srgb, ${accent} 18%, transparent)`)
+    set('--c-head-sel', `color-mix(in srgb, ${accent} 22%, var(--c-surface))`)
+  } else for (const k of ['--c-surface', '--c-raise', '--c-head', '--c-top', '--c-bg', '--c-border', '--c-text', '--c-top-text', '--c-grid', '--c-muted', '--c-head-text', '--c-hover', '--c-accent', '--c-accent-text', '--c-accent-soft', '--c-head-sel']) root.style.removeProperty(k)
   if (canvas) {
     readColors()
     schedule()

@@ -275,6 +275,28 @@ function copyText(text) {
   }
   t.remove()
 }
+// a CSS colour (hsl(), rgb(), #hex) as { h, s, l } with s and l from 0 to 1, or null
+function parseColor(text) {
+  const t = String(text || '').trim()
+  let r
+  let g
+  let b
+  let m = t.match(/^hsla?\(\s*([\d.]+)(?:deg)?[\s,]+([\d.]+)%[\s,]+([\d.]+)%/i)
+  if (m) return { h: +m[1], s: +m[2] / 100, l: +m[3] / 100 }
+  if ((m = t.match(/^#([0-9a-f]{3}|[0-9a-f]{6})\b/i))) {
+    const x = m[1].length === 3 ? [...m[1]].map((c) => c + c).join('') : m[1]
+    ;[r, g, b] = [0, 2, 4].map((i) => Number.parseInt(x.slice(i, i + 2), 16) / 255)
+  } else if ((m = t.match(/^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/i))) [r, g, b] = [+m[1] / 255, +m[2] / 255, +m[3] / 255]
+  else return null
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+  const l = (max + min) / 2
+  const d = max - min
+  if (!d) return { h: 0, s: 0, l }
+  const s = d / (1 - Math.abs(2 * l - 1))
+  const h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4
+  return { h: (h * 60 + 360) % 360, s, l }
+}
 const fmtNum = (n) => (typeof n === 'number' ? (Number.isInteger(n) ? String(n) : String(+n.toPrecision(10))) : String(n))
 // short axis labels: 12k, 3.5M
 const axisNum = (n) => {

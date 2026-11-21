@@ -21,6 +21,8 @@
   --c-ok: #067647;
   --c-warn: #b54708;
   --shadow: 0 4px 16px rgba(15, 27, 45, 0.12), 0 0 0 1px rgba(15, 27, 45, 0.06);
+  --r-field: 8px;
+  --r-box: 12px;
   color-scheme: light;
 }
 :root[data-theme='dark'] {
@@ -105,7 +107,7 @@ pre {
 .logo {
   width: 22px;
   height: 22px;
-  border-radius: 6px;
+  border-radius: var(--r-field);
   display: grid;
   place-items: center;
   background: var(--c-accent-soft);
@@ -118,7 +120,7 @@ pre {
   max-width: 260px;
   background: transparent;
   border: 0;
-  border-radius: 5px;
+  border-radius: var(--r-field);
   color: var(--c-muted);
   padding: 4px 8px;
 }
@@ -158,7 +160,7 @@ pre {
   color: var(--c-muted);
   font-size: 12px;
   padding: 4px 8px;
-  border-radius: 5px;
+  border-radius: var(--r-field);
 }
 .save-status.warn {
   color: var(--c-warn);
@@ -173,7 +175,7 @@ pre {
   width: 26px;
   height: 26px;
   border: 0;
-  border-radius: 5px;
+  border-radius: var(--r-field);
   background: transparent;
   color: var(--c-muted);
   padding: 0;
@@ -221,7 +223,7 @@ pre {
   padding: 0 6px;
   justify-content: center;
   border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: var(--r-field);
   background: transparent;
   color: var(--c-text);
 }
@@ -241,7 +243,7 @@ pre {
 .input {
   height: 28px;
   border: 1px solid var(--c-border);
-  border-radius: 5px;
+  border-radius: var(--r-field);
   background: var(--c-surface);
   color: var(--c-text);
   font: inherit;
@@ -326,7 +328,7 @@ textarea.input {
   z-index: 40;
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: 6px;
+  border-radius: var(--r-field);
   box-shadow: var(--shadow);
   padding: 4px 8px;
   font: 12px var(--mono);
@@ -393,7 +395,7 @@ textarea.input {
   pointer-events: auto;
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: 6px;
+  border-radius: var(--r-field);
   box-shadow: 0 2px 10px rgba(15, 27, 45, 0.12);
   cursor: move;
   z-index: 3;
@@ -411,7 +413,7 @@ textarea.input {
   display: none;
   place-items: center;
   border: 1px solid var(--c-border);
-  border-radius: 5px;
+  border-radius: var(--r-field);
   background: var(--c-surface);
   color: var(--c-muted);
   padding: 0;
@@ -539,7 +541,7 @@ textarea.input {
   z-index: 1000;
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: 8px;
+  border-radius: var(--r-box);
   box-shadow: var(--shadow);
   padding: 4px;
   max-height: 80vh;
@@ -554,7 +556,7 @@ textarea.input {
   background: transparent;
   text-align: left;
   padding: 6px 10px 6px 6px;
-  border-radius: 5px;
+  border-radius: var(--r-field);
   color: var(--c-text);
 }
 .menu-item:hover:not(.disabled) {
@@ -644,7 +646,7 @@ textarea.input {
   height: 28px;
   padding: 0 12px;
   border: 1px solid var(--c-border);
-  border-radius: 5px;
+  border-radius: var(--r-field);
   background: var(--c-surface);
   color: var(--c-text);
   font-weight: 500;
@@ -692,7 +694,7 @@ textarea.input {
   flex-direction: column;
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: 10px;
+  border-radius: var(--r-box);
   box-shadow: var(--shadow);
   outline: none;
 }
@@ -716,7 +718,7 @@ textarea.input {
   padding: 10px 14px;
   border-top: 1px solid var(--c-border);
   background: var(--c-raise);
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 var(--r-box) var(--r-box);
 }
 .msg {
   margin: 0;
@@ -773,7 +775,7 @@ textarea.input {
   background: #1f2937;
   color: #fff;
   padding: 9px 16px;
-  border-radius: 8px;
+  border-radius: var(--r-box);
   box-shadow: var(--shadow);
   max-width: 80%;
   transition: opacity 0.4s;
@@ -797,7 +799,7 @@ textarea.input {
   min-width: 260px;
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: 6px;
+  border-radius: var(--r-field);
   box-shadow: var(--shadow);
   padding: 3px;
 }
@@ -858,7 +860,7 @@ textarea.input {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--c-border);
-  border-radius: 6px;
+  border-radius: var(--r-field);
   max-height: 230px;
   overflow: auto;
 }
@@ -886,7 +888,7 @@ textarea.input {
   justify-content: space-between;
   border: 1px solid var(--c-border);
   background: var(--c-surface);
-  border-radius: 5px;
+  border-radius: var(--r-field);
   padding: 4px 8px;
   text-align: left;
 }
@@ -907,7 +909,7 @@ textarea.input {
   justify-content: flex-start;
   padding: 0 12px;
   border: 1px solid var(--c-border);
-  border-radius: 5px;
+  border-radius: var(--r-field);
   font-size: 14px;
 }
 .fn-wrap {
@@ -920,7 +922,7 @@ textarea.input {
 .fn-list {
   overflow: auto;
   border: 1px solid var(--c-border);
-  border-radius: 6px;
+  border-radius: var(--r-field);
   display: flex;
   flex-direction: column;
 }
@@ -943,7 +945,7 @@ textarea.input {
   padding: 8px 10px;
   background: var(--c-raise);
   border: 1px solid var(--c-border);
-  border-radius: 6px;
+  border-radius: var(--r-field);
   margin-bottom: 10px;
   word-break: break-word;
 }
@@ -959,7 +961,7 @@ textarea.input {
   gap: 10px;
   padding: 6px 8px;
   border: 1px solid var(--c-border);
-  border-radius: 6px;
+  border-radius: var(--r-field);
 }
 .name-row code {
   flex: 1;
@@ -981,7 +983,7 @@ textarea.input {
   gap: 12px;
   padding: 8px;
   border: 1px solid var(--c-border);
-  border-radius: 6px;
+  border-radius: var(--r-field);
   margin-bottom: 8px;
 }
 .cf-row > div {
@@ -1008,7 +1010,7 @@ textarea.input {
 .chart-preview {
   height: 300px;
   border: 1px solid var(--c-border);
-  border-radius: 6px;
+  border-radius: var(--r-field);
   background: var(--c-surface);
 }
 .flt {
@@ -1077,7 +1079,7 @@ kbd {
   flex: 1;
   border: 0;
   background: transparent;
-  border-radius: 5px;
+  border-radius: var(--r-field);
   padding: 5px 10px;
   color: var(--c-muted);
 }
@@ -1093,7 +1095,7 @@ kbd {
 .sql-preview {
   background: var(--c-raise);
   border: 1px solid var(--c-border);
-  border-radius: 6px;
+  border-radius: var(--r-field);
   padding: 10px;
   max-height: 180px;
   overflow: auto;
@@ -1153,7 +1155,7 @@ kbd {
   align-items: center;
   gap: 8px;
   padding: 6px 6px 6px 8px;
-  border-radius: 6px;
+  border-radius: var(--r-field);
   cursor: pointer;
 }
 .conn:hover {
@@ -1219,7 +1221,7 @@ kbd {
   align-items: center;
   gap: 5px;
   padding: 3px 6px 3px 2px;
-  border-radius: 5px;
+  border-radius: var(--r-field);
   color: var(--c-text);
 }
 .tree-row:hover {
@@ -1313,7 +1315,7 @@ kbd {
   border: 0;
   background: transparent;
   color: var(--c-muted);
-  border-radius: 5px;
+  border-radius: var(--r-field);
   display: grid;
   place-items: center;
   margin-bottom: 1px;
@@ -1562,7 +1564,7 @@ kbd {
   gap: 6px;
   padding: 18px 10px;
   border: 1px solid var(--c-border);
-  border-radius: 10px;
+  border-radius: var(--r-box);
   background: var(--c-surface);
   color: var(--c-accent);
 }
