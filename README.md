@@ -14,12 +14,12 @@ Runs on [Bun](https://bun.sh). No packages to install.
 **From GitHub** (runs on your computer). In Zod: **Connectors → Add custom → Add from a GitHub link or address**, paste
 
 ```
-github.com/OWNER/zod-sheets
+github.com/zodagent/sheets/tree/main
 ```
 
-Zod runs it with `bunx github:OWNER/zod-sheets`. Pin a version with `github.com/OWNER/zod-sheets/tree/v1.0.0`.
+Zod runs it with `bunx github:zodagent/sheets#main`. Name the branch (`/tree/main`): Bun cannot fetch a bare `github:` spec. Pin a version with `github.com/zodagent/sheets/tree/v1.0.0`.
 
-**From a clone** (what a private repository needs: `bunx github:` fetches an unauthenticated tarball, so it only works for a public repository). Clone it, then in the same form paste a command:
+**From a clone** (needed if you fork this privately: `bunx github:` fetches an unauthenticated tarball, so it only works for a public repository). Clone it, then in the same form paste a command:
 
 ```
 bun /path/to/zod-sheets/server.js
