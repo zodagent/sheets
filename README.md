@@ -19,6 +19,12 @@ github.com/OWNER/zod-sheets
 
 Zod runs it with `bunx github:OWNER/zod-sheets`. Pin a version with `github.com/OWNER/zod-sheets/tree/v1.0.0`.
 
+**From a clone** (what a private repository needs: `bunx github:` fetches an unauthenticated tarball, so it only works for a public repository). Clone it, then in the same form paste a command:
+
+```
+bun /path/to/zod-sheets/server.js
+```
+
 **Saving without a prompt.** Edits you make on screen are saved by a tool the page calls, and Zod asks Allow / Deny for any tool that changes something. Open **Connectors → Sheets** and set the server to *trusted* (or set `app_apply` to *allow*) so saving is silent. Reads are never asked about.
 
 **Self-hosted** (Docker, Dokploy, a VPS):
