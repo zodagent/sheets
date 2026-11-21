@@ -98,6 +98,34 @@ App.refreshTop = () => {
   if (el) el.textContent = A.book?.name || ''
 }
 
+// Full screen: the browser lets a page do this only when its host frame allows it. When it does not (Zod's frame), the same app opens
+// in a tab of its own, which fills the whole window.
+async function openInTab() {
+  try {
+    const r = await Host.tool('app_link', {})
+    if (!r.url) return toast('The full-screen address is not available on this server.', 'warn')
+    await Host.request('ui/open-link', { url: r.url })
+  } catch (e) {
+    toast(`Could not open a tab: ${e.message}`, 'err')
+  }
+}
+async function toggleFullscreen() {
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen()
+    else await document.documentElement.requestFullscreen()
+  } catch {
+    if (STANDALONE) return toast('Your browser did not allow full screen. Press F11 instead.', 'warn')
+    openInTab() // the frame is not allowed to go full screen: use a tab
+  }
+}
+document.addEventListener('fullscreenchange', () => {
+  const b = $('#fs-btn')
+  if (!b) return
+  b.title = document.fullscreenElement ? 'Exit full screen' : 'Full screen'
+  b.replaceChildren(icon(document.fullscreenElement ? 'minimize' : 'maximize', 17))
+  schedule()
+})
+
 function buildShell() {
   const root = $('#root')
   const wbBtn = h('button.wb-btn', { onclick: (e) => workbookMenu(e.currentTarget), title: 'Workbooks' }, h('span#wb-name', ''), icon('down', 14))
@@ -108,6 +136,8 @@ function buildShell() {
     h('span.grow'),
     h('button#save-status.save-status', { onclick: () => Save.retry() }, 'All changes saved'),
     h('button.icon-btn.top-ico', { title: 'Keyboard shortcuts', onclick: () => App.openShortcuts() }, icon('info', 17)),
+    STANDALONE ? '' : h('button.icon-btn.top-ico', { title: 'Open in a new tab', onclick: openInTab }, icon('external', 17)),
+    h('button#fs-btn.icon-btn.top-ico', { title: 'Full screen', onclick: toggleFullscreen }, icon('maximize', 17)),
   )
   const sv = buildSheetView()
   const dv = buildDbView()
@@ -121,6 +151,7 @@ function buildShell() {
 
 async function boot() {
   applyTheme(null)
+  if (STANDALONE) document.documentElement.dataset.standalone = '1'
   buildShell()
   Host.on('ui/notifications/host-context-changed', applyTheme)
   Host.on('ui/notifications/tool-result', (r) => {

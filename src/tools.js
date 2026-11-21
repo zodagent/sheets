@@ -7,6 +7,7 @@ import { Book, FUNCTION_NAMES, XlErr, addr, colIndex, mapRefs, parseAddr, parseI
 import { cellsFromRows, parseCSV, readXlsx, rowsOf, toCSV, writeXlsx } from './io.js'
 import * as db from './db.js'
 import * as store from './store.js'
+import { web } from './web.js'
 
 export const UI_URI = 'ui://sheets/app'
 const MAX_CELLS = 100000
@@ -596,6 +597,14 @@ export const TOOLS = [
       const b = store.get(a.workbook)
       return text('', { workbook: b.toJSON(), workbooks: store.list(), connections: db.listConnections(), functions: FUNCTION_NAMES() })
     },
+  },
+  {
+    name: 'app_link',
+    description: 'Page only: the private address that opens this app in a browser tab of its own.',
+    inputSchema: S({}),
+    annotations: { readOnlyHint: true },
+    _meta: { ui: { visibility: ['app'] } },
+    run: () => text('', { url: web.url }),
   },
   {
     name: 'app_poll',

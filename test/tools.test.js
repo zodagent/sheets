@@ -130,3 +130,27 @@ test('database tools: reads run freely, writes and credentials do not slip throu
   expect(names).not.toContain('app_db_save')
   expect(JSON.stringify((await tool('db_connections')).data)).not.toMatch(/password"?:\s*"[^"]/)
 })
+
+test('the full-screen tab: a private local address that needs its secret, and the link comes only from a page-only tool', async () => {
+  const { startWeb, web } = await import('../src/web.js')
+  const { buildPage } = await import('../src/page.js')
+  const s = startWeb(handle, buildPage)
+  try {
+    expect(web.url).toMatch(/^http:\/\/127\.0\.0\.1:\d+\/\?t=[0-9a-f]{32}$/)
+    const base = web.url.split('?')[0]
+    expect((await fetch(web.url)).status).toBe(200)
+    expect((await fetch(base)).status).toBe(403)
+    expect((await fetch(`${base}?t=wrong`)).status).toBe(403)
+    const post = (headers) => fetch(`${base}mcp`, { method: 'POST', headers, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'ping' }) })
+    expect((await post({})).status).toBe(403)
+    expect((await post({ 'x-sheets-token': web.token })).status).toBe(200)
+    // the model never sees the link: it is not in any model-visible tool or result
+    const link = await tool('app_link')
+    expect(link.data.url).toBe(web.url)
+    const tools = (await rpc('tools/list')).tools
+    expect(tools.find((t) => t.name === 'app_link')._meta.ui.visibility).toEqual(['app'])
+    expect((await tool('open_sheets', {})).text).not.toContain(web.token)
+  } finally {
+    s?.stop(true)
+  }
+})

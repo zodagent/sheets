@@ -1740,3 +1740,31 @@ select option {
 .statusbar {
   background: transparent;
 }
+
+/* opened on its own in a tab (or full screen): the whole window is the app, no card around it */
+html[data-standalone] .app {
+  padding: 0;
+  gap: 0;
+}
+html[data-standalone] .topbar {
+  padding: 2px 16px 0;
+  border-bottom: 1px solid var(--c-border);
+}
+html[data-standalone] .sheet-view,
+html[data-standalone] .db-view {
+  border: 0;
+  border-radius: 0;
+}
+html:fullscreen .app {
+  padding: 0;
+  gap: 0;
+}
+html:fullscreen .topbar {
+  padding: 2px 16px 0;
+  border-bottom: 1px solid var(--c-border);
+}
+html:fullscreen .sheet-view,
+html:fullscreen .db-view {
+  border: 0;
+  border-radius: 0;
+}

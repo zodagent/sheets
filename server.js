@@ -7,6 +7,7 @@ import { createInterface } from 'node:readline'
 import { TOOLS, UI_URI } from './src/tools.js'
 import { buildPage } from './src/page.js'
 import { closeAll } from './src/db.js'
+import { startWeb } from './src/web.js'
 
 const MIME = 'text/html;profile=mcp-app'
 const INSTRUCTIONS = `Sheets is a spreadsheet (formulas, formatting, charts, many sheets, 230+ functions) with a database workbench (SQLite, PostgreSQL, MySQL).
@@ -68,6 +69,7 @@ if (import.meta.main) {
     })
     console.error(`zod-sheets on http://0.0.0.0:${port}/mcp${token ? ' (token required)' : ' (NO TOKEN: set MCP_TOKEN)'}`)
   } else {
+    startWeb(handle, buildPage)
     let chain = Promise.resolve()
     createInterface({ input: process.stdin }).on('line', (line) => {
       chain = chain.then(async () => {

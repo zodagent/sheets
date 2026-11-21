@@ -79,6 +79,9 @@ const ICONS = {
   tag: 'M12 2H2v10l9.3 9.3a1 1 0 0 0 1.4 0l8.6-8.6a1 1 0 0 0 0-1.4z M7 7h.01',
   sigma: 'M18 7V4H6l6 8-6 8h12v-3',
   file: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6',
+  maximize: 'M8 3H5a2 2 0 0 0-2 2v3 M21 8V5a2 2 0 0 0-2-2h-3 M3 16v3a2 2 0 0 0 2 2h3 M16 21h3a2 2 0 0 0 2-2v-3',
+  minimize: 'M8 3v3a2 2 0 0 1-2 2H3 M21 8h-3a2 2 0 0 1-2-2V3 M3 16h3a2 2 0 0 1 2 2v3 M16 21v-3a2 2 0 0 1 2-2h3',
+  external: 'M15 3h6v6 M10 14 21 3 M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6',
   folder: 'M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z',
   eye: 'M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
   key: 'M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.8 7.8 5.5 5.5 0 0 1 7.8-7.8z m0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4',
@@ -111,6 +114,10 @@ const icon = (name, size = 16) => {
 }
 
 // ── host bridge: the MCP Apps protocol over postMessage ────────────────────────────────────────────────────────────────────
+// Inside Zod the page talks to its host over postMessage. Opened on its own in a tab (the link the server prints) it is the top-level
+// page and talks straight to the server, with the secret token from the link.
+const STANDALONE = window.parent === window
+const TOKEN = new URLSearchParams(location.search).get('t') || ''
 const Host = (() => {
   let id = 0
   const pending = new Map()
@@ -131,13 +138,20 @@ const Host = (() => {
       listeners[method] = f
     },
     request(method, params) {
+      if (STANDALONE) {
+        if (method === 'ui/initialize') return Promise.resolve({ hostContext: { theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light', styles: { variables: {} } } })
+        if (method === 'ui/open-link') return Promise.resolve(window.open(params.url, '_blank', 'noopener'))
+        return fetch('/mcp', { method: 'POST', headers: { 'content-type': 'application/json', 'x-sheets-token': TOKEN }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) })
+          .then((r) => (r.ok ? r.json() : Promise.reject(new Error('this tab lost its connection to Sheets; open it again from Zod'))))
+          .then((j) => (j.error ? Promise.reject(new Error(j.error.message)) : j.result))
+      }
       return new Promise((ok, fail) => {
         const i = ++id
         pending.set(i, { ok, fail })
         send({ id: i, method, params })
       })
     },
-    notify: (method, params) => send({ method, params }),
+    notify: (method, params) => !STANDALONE && send({ method, params }),
     // call a server tool; resolves to its structuredContent (or text), throws with the tool's own message when it fails
     async tool(name, args = {}) {
       const r = await Host.request('tools/call', { name, arguments: args })
